@@ -2,6 +2,7 @@ import pymongo
 import re
 import datetime
 
+
 welcome = print("welcome to Company Management System")
 operations = print("hello....\n"
                    "please select the option form the below choice\n"
@@ -70,17 +71,15 @@ def Add_Employee():
     print(list(user_dict.items()))
 
 def Delete_employee():
-
-    seq = 0
     list = []
-    for i in mycol.find():
-        seq += 1
-        # print(seq)
-        list.append(seq)
+    for x in mycol.find({}, {"id": 1}):
+        # print(x["id"])
+        list.append(x["id"])
     # print(list)
 
     remove = {"id": int(input("enter the employee id who you want to delete:"))}
     dis = remove['id']
+
     if dis in list:
         mycol.delete_one(remove)
         Display()
@@ -102,15 +101,29 @@ def Edit_details():
    while True:
        op = int(input("enter the number of choice you want to change:"))
        if op == 1:
-           print("sorry...you can't change the employee name:")
-       elif op == 2:
-           seq = 0
            list = []
-           for i in mycol.find():
-               seq += 1
-               # print(seq)
-           list.append(seq)
-           remove = {"id": int(input("enter the employee id :"))}
+           for x in mycol.find({}, {"id": 1}):
+               # print(x["id"])
+               list.append(x["id"])
+           # print(list)
+
+           remove = {"id": int(input("enter the employee id who you want to edit:"))}
+           dis = remove['id']
+
+           if dis in list:
+               nam = mycol.update_one({"id": dis}, {"$set": {"name": input("enter the name:")}})
+               print("successfully update name")
+           else:
+               print("this id is not found")
+               print("please enter valid employee id")
+       elif op == 2:
+           list = []
+           for x in mycol.find({}, {"id": 1}):
+               # print(x["id"])
+               list.append(x["id"])
+           # print(list)
+
+           remove = {"id": int(input("enter the employee id who you want to edit:"))}
            dis = remove['id']
            if dis in list:
               adr = mycol.update_one({"id": dis},{"$set": {"Address": input("enter the address:")}})
@@ -120,50 +133,64 @@ def Edit_details():
               print("please enter valid employee id")
 
        elif op == 3:
-           seq = 0
            list = []
-           for i in mycol.find():
-               seq += 1
-               # print(seq)
-           list.append(seq)
-           remove = {"id": int(input("enter the employee id :"))}
-           dis_st = remove['id']
-           if dis_st in list:
-               mycol.update_one({"id":dis_st},{"$set":{"Status": input("enter the status:")}})
+           for x in mycol.find({}, {"id": 1}):
+               # print(x["id"])
+               list.append(x["id"])
+           # print(list)
+
+           remove = {"id": int(input("enter the employee id who you want to edit:"))}
+           dis = remove['id']
+           if dis in list:
+               mycol.update_one({"id":dis},{"$set":{"Status": input("enter the status:")}})
                print("Status successfully updated")
            else:
                print("this id is not found")
                print("please enter valid employee id")
 
        elif op == 4:
-          print("sorry.... you can't change DOB")
-       elif op == 5:
-           seq = 0
            list = []
-           for i in mycol.find():
-               seq += 1
-               # print(seq)
-           list.append(seq)
-           remove = {"id": int(input("enter the employee id :"))}
-           dis_em = remove['id']
-           if dis_em in list:
-             em = mycol.update_one({"id":dis_em },{"$set": {"Email": input("enter the email:")}})
+           for x in mycol.find({}, {"id": 1}):
+               # print(x["id"])
+               list.append(x["id"])
+           # print(list)
+
+           remove = {"id": int(input("enter the employee id who you want to edit:"))}
+           dis = remove['id']
+           if dis in list:
+               mycol.update_one({"id":dis},{"$set":{"DOB": input("enter the DOB:")}})
+               print("DOB successfully updated")
+           else:
+               print("this id is not found")
+               print("please enter valid employee id")
+
+       elif op == 5:
+           list = []
+           for x in mycol.find({}, {"id": 1}):
+               # print(x["id"])
+               list.append(x["id"])
+           # print(list)
+
+           remove = {"id": int(input("enter the employee id who you want to edit:"))}
+           dis = remove['id']
+           if dis in list:
+             em = mycol.update_one({"id":dis},{"$set": {"Email": input("enter the email:")}})
              print("email address sucessfully update")
            else:
                print("this id is not found")
                print("please enter valid employee id")
 
        elif op == 6:
-           seq = 0
            list = []
-           for i in mycol.find():
-               seq += 1
-               # print(seq)
-           list.append(seq)
-           remove = {"id": int(input("enter the employee id :"))}
-           dis_mo = remove['id']
-           if dis_mo in list:
-              mb = mycol.update_one({"id":dis_mo},{"$set": {"Mobile No": input("enter the mobile no:")}})
+           for x in mycol.find({}, {"id": 1}):
+               # print(x["id"])
+               list.append(x["id"])
+           # print(list)
+
+           remove = {"id": int(input("enter the employee id who you want to edit:"))}
+           dis = remove['id']
+           if dis in list:
+              mb = mycol.update_one({"id":dis},{"$set": {"Mobile No": input("enter the mobile no:")}})
               print("mobile number succesfully updated")
            else:
                print("this id is not found")
@@ -191,7 +218,7 @@ def Display():
     if (seq == 0):
         print("No DATA......")
     else:
-       for i in mycol.find():
+       for i in mycol.find({},{ "_id": 0}):
           print(i)
 
 
@@ -207,8 +234,15 @@ def Add_Function():
        amt = 0
        return amt
 
-    function = {"id": sequence(), "Title": input("enter the Function name:"), "Date": input("enter the date:"),
+    def date_fun():
+        date_entry = input('Enter a date in YYYY-MM-DD format:')
+        year, month, day = map(int, date_entry.split('-'))
+        date1= datetime.datetime(year, month, day)
+        return date1
+
+    function = {"id": sequence(), "Title": input("enter the Function name:"), "Date": date_fun(),
                 "Budget": int(input("enter the budget for function:")), "Amount":print("right now your amount for function is:",amount()) }
+
     x = myan.insert_one(function)
     if input('Do You Want To Continue to add function details? ') != 'y':
         break
