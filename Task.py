@@ -2,7 +2,6 @@ import pymongo
 import re
 import datetime
 
-
 welcome = print("welcome to Company Management System")
 operations = print("hello....\n"
                    "please select the option form the below choice\n"
@@ -45,21 +44,36 @@ def Add_Employee():
     def validate_mobilenum():
         while True:
           a = input("enter the mobile number:")
-          if len(a) == 10:
+          if len(a) == 10 and a.isdigit():
             break
           print("it's not valid....enter the 10-digit mobile number:")
         return a
     def validate():
          while True:
-             date = input("enter the date of birthday:")
-             if re.search("^([1-9] |1[0-9]| 2[0-9]|3[0-1])(.|-)([1-9] |1[0-2])(.|-|)20[0-9][0-9]$",date):
+             date_entry = input("enter the date of birthday in YYYY-MM-DD format:")
+             # year, month, day = map(int, date_entry.split('-'))
+             # date1 = datetime.datetime(year, month, day)
+             # print(date1)
+             # if re.search("^([1-9] |1[0-9]| 2[0-9]|3[0-1])(.|-)([1-9] |1[0-2])(.|-|)(18|19|20)[0-9][0-9]$",date1):
+             # if re.search("^(18|19|20)[0-9][0-9](.|-)([1-9] |1[0-2])(.|-)([1-9] |1[0-9]| 2[0-9]|3[0-1])",date_entry):
+             if re.search("^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$",date_entry):
+                year, month, day = map(int, date_entry.split('-'))
+                date1 = datetime.datetime(year, month, day)
+                # date2 = datetime.strftime(date1, '%d/%m/%Y')
+                return date1
                 break
-             print("It's not valid.. enter the YYYY-MM-DD format:")
-         return date
+             else:
+               print("It's not valid.. enter the YYYY-MM-DD format:")
+
+      # def date_fun():
+      #   date_entry = input('Enter a date in DD-MM-YYYY format:')
+      #   year, month, day = map(int, date_entry.split('-'))
+      #   date1 = datetime.datetime(year, month, day)
+      #   return date1
     def email_vlidation():
         while True:
           email = input("enter an email address:")
-          if re.match("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$",email):
+          if re.match("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z.]+$",email):
            break
           print("is not valid..please enter correct email:")
         return email
@@ -89,6 +103,7 @@ def Delete_employee():
 
 
 def Edit_details():
+
    print(
       "please select the option form the below what u want to edit:\n"
       "1. Employee name\n"
@@ -158,7 +173,7 @@ def Edit_details():
            remove = {"id": int(input("enter the employee id who you want to edit:"))}
            dis = remove['id']
            if dis in list:
-               mycol.update_one({"id":dis},{"$set":{"DOB": input("enter the DOB:")}})
+               mycol.update_one({"id":dis},{"$set":{"DOB":validate()}})
                print("DOB successfully updated")
            else:
                print("this id is not found")
@@ -212,41 +227,130 @@ def Edit_details():
                "6. Employee mobile no\n")
 
 def Display():
+
     seq = 0
     for i in mycol.find():
         seq += 1
     if (seq == 0):
         print("No DATA......")
     else:
-       for i in mycol.find({},{ "_id": 0}):
-          print(i)
+       for i in mycol.find():
+          print(i["name"], i["Address"] , i["Status"], i["DOB"].strftime("%m/%d/%Y"), i["Email"], i["Mobile No"])
+          print("-" * 70)
 
 
-def Add_Function():
-  while True:
-    def sequence():
-        seq = 1
+
+def Annual():
+
+    print(
+        "please select the option form the below :\n"
+        "1. Add Function Name\n"
+        "2. Display the deatils of Function\n"
+        "3. Update the functions details\n")
+
+    def Add_Function():
+        def sequence():
+            seq = 1
+            for i in myan.find():
+                seq += 1
+            return seq
+
+        def amount():
+            amt = 0
+            return amt
+
+        def date_fun():
+            date_entry = input('Enter a date in YYYY-MM-DD format:')
+            year, month, day = map(int, date_entry.split('-'))
+            date1 = datetime.datetime(year, month, day)
+            return date1
+
+        function = {"id": sequence(), "Title": input("enter the Function name:"), "Date": date_fun(),
+                    "Budget": int(input("enter the budget for function:")),
+                    "Amount": print("right now your amount for function is:", amount())}
+        x = myan.insert_one(function)
+
+    def Disply_Fun():
+        seq = 0
         for i in myan.find():
             seq += 1
-        return seq
+        if (seq == 0):
+            print("No DATA......")
+        else:
+            for i in myan.find():
+                print(i["Title"], i["Date"].strftime("%d/%m/%y"), i["Budget"], i["Amount"])
+                print("-" * 70)
+            # for i in myan.find({}, {"_id": 0}):
+            #     print(i)
 
-    def amount():
-       amt = 0
-       return amt
+    def Edit_Function():
 
-    def date_fun():
-        date_entry = input('Enter a date in YYYY-MM-DD format:')
-        year, month, day = map(int, date_entry.split('-'))
-        date1= datetime.datetime(year, month, day)
-        return date1
 
-    function = {"id": sequence(), "Title": input("enter the Function name:"), "Date": date_fun(),
-                "Budget": int(input("enter the budget for function:")), "Amount":print("right now your amount for function is:",amount()) }
+         list = []
+         for x in myan.find({}, {"Title": 1}):
+                # print(x["id"])
+              list.append(x["Title"])
+              # print(list)
+        #
+         remove = {"Title":(input("enter the function name who you want to edit:"))}
+         dis = remove['Title']
+        #
+         if dis in list:
+            nam = myan.update_one({"Title": dis}, {"$set": {"Amount": input("enter the amount:")}})
+            print("successfully update Function name")
+         else:
+              print("this id is not found")
+              print("please enter valid Function name")
+        #         print("Function name update sucessfully")
+        #     elif op==2:
+        #         list = []
+        #         for x in myan.find({}, {"Title": 1}):
+        #             # print(x["id"])
+        #             list.append(x["Title"])
+        #         # print(list)
+        #
+        #         remove = {"Title": (input("enter the function name who you want to edit:"))}
+        #         dis = remove['Title']
+        #
+        #         if dis in list:
+        #             nam = myan.update_one({"Title": dis}, {"$set": {"Date": input("enter the date:")}})
+        #             print("successfully update Date")
+        #         else:
+        #             print("this id is not found")
+        #             print("please enter valid Function name")
+        #
+        #     elif op==3:
+        #         print("Function budget update sucessfully")
+        #     elif op==4:
+        #         print("Function Amount update sucessfuly")
+        #     if input('Do You Want To Continue to Edit function details? ') != 'y':
+        #         break
+        #     else:
+        #         print(
+        #             "please select the option form the below :\n"
+        #             "1. Edit Function Name\n"
+        #             "2. Edit Function date\n"
+        #             "3. Edit Function budget\n"
+        #             "4. Edit Function Amount\n")
 
-    x = myan.insert_one(function)
-    if input('Do You Want To Continue to add function details? ') != 'y':
+    while True:
+     choice = int(input("enter the number of choise you want:"))
+     if choice == 1:
+       Add_Function()
+     elif choice == 2:
+        Disply_Fun()
+     elif choice == 3:
+        Edit_Function()
+     else:
+        print("enter the valid number:")
+     if input('Do You Want To Continue to add function details? ') != 'y':
         break
-
+     else:
+        print(
+            "please select the option form the below :\n"
+            "1. Add Function Name\n"
+            "2. Display the deatils of Function\n"
+            "3. Update the functions details\n")
 
 
 while True:
@@ -270,7 +374,7 @@ while True:
     print("Attendance Management")
  elif choice == 7:
      print("Annual Functions Management")
-     Add_Function()
+     Annual()
  elif choice == 8:
      print("Holiday Management")
  else:
