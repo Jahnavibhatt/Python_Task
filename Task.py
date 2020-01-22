@@ -22,19 +22,31 @@ myhl =mydb["Holiday"]
 mya = mydb["Attendence"]
 
 
-def sequence():
-    seq = 1
-    for i in mycol.find():
-        seq += 1
-    return seq
 
-def date_fun():
-    date_entry = input('Enter a date in YYYY-MM-DD format:')
-    year, month, day = map(int, date_entry.split('-'))
-    date1 = datetime.datetime(year, month, day)
-    return date1
+# def date_fun():
+#     date_entry = input('Enter a date in YYYY-MM-DD format:')
+#     year, month, day = map(int, date_entry.split('-'))
+#     date1 = datetime.datetime(year, month, day)
+#     return date1
+
+def validate():
+    while True:
+        date_entry = input("enter the date of birthday in YYYY-MM-DD format:")
+        if re.search("^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$",date_entry):
+                year, month, day = map(int, date_entry.split('-'))
+                date1 = datetime.datetime(year, month, day)
+                return date1
+                break
+        else:
+               print("It's not valid.. enter the YYYY-MM-DD format:")
 
 def Add_Employee():
+    def sequence():
+        seq = 1
+        for i in mycol.find():
+            seq += 1
+        return seq
+
     def name_validation():
         while True:
           name = input("enter employee name:")
@@ -164,7 +176,7 @@ def Edit_details():
            remove = {"id": int(input("enter the employee id who you want to edit:"))}
            dis = remove['id']
            if dis in list:
-             em = mycol.update_one({"id":dis},{"$set": {"Email": input("enter the email:")}})
+             em = mycol.update_one({"id":dis},{"$set": {"Email":email_vlidation() }})
              print("email address sucessfully update")
            else:
                print("this id is not found")
@@ -176,7 +188,7 @@ def Edit_details():
            remove = {"id": int(input("enter the employee id who you want to edit:"))}
            dis = remove['id']
            if dis in list:
-              mb = mycol.update_one({"id":dis},{"$set": {"Mobile No": input("enter the mobile no:")}})
+              mb = mycol.update_one({"id":dis},{"$set": {"Mobile No":validate_mobilenum()}})
               print("mobile number succesfully updated")
            else:
                print("this id is not found")
@@ -224,6 +236,12 @@ def Annual():
         "3. Update the functions details\n")
 
     def Add_Function():
+        def sequence():
+            seq = 1
+            for i in mycol.find():
+                seq += 1
+            return seq
+
         def amount():
             amt = 0
             return amt
@@ -232,7 +250,7 @@ def Annual():
             year, month, day = map(int, date_entry.split('-'))
             date1 = datetime.datetime(year, month, day)
             return date1
-        function = {"id": sequence(), "Title": input("enter the Function name:"), "Date": date_fun(),
+        function = {"id": sequence(), "Title": input("enter the Function name:"), "Date": validate(),
                     "Budget": float(input("enter the budget for function:")),
                     "Amount": print("right now your amount for function is:", amount())}
         x = myan.insert_one(function)
@@ -277,7 +295,7 @@ def Annual():
                  remove = {"id": int(input("enter the function id who you want to edit:"))}
                  dis = remove['id']
                  if dis in list:
-                     nam = myan.update_one({"id": dis}, {"$set": {"Date":date_fun()}})
+                     nam = myan.update_one({"id": dis}, {"$set": {"Date":validate()}})
                      print("successfully update Date")
                  else:
                      print("this id is not found")
@@ -333,10 +351,9 @@ def Annual():
      op2 = input('Do You Want To Continue with function details? ')
      if op2 == 'y':
          print("please select the option form the below choice\n"
-               "1. Edit Function name\n"
-               "2. Edit Function date\n"
-               "3. Edit Function Budget\n"
-               "4. Edit Function Amount\n")
+               "1. Add Function Name\n"
+               "2. Display the deatils of Function\n"
+               "3. Update the functions details\n")
 
      elif op2 == 'n':
          break
@@ -353,7 +370,13 @@ def Holiday_management():
         "3. Update the Holiday details\n"
         "4. Delete Holiday details\n")
     def Add_Holiday():
-        function = {"id": sequence(), "Holiday_name": input("enter the Holiday name:"), "Date": date_fun()}
+        def sequence():
+            seq = 1
+            for i in mycol.find():
+                seq += 1
+            return seq
+
+        function = {"id": sequence(), "Holiday_name": input("enter the Holiday name:"), "Date":validate()}
         x = myhl.insert_one(function)
     def Edit_Holiday():
         print(
@@ -381,19 +404,21 @@ def Holiday_management():
                 remove = {"id": int(input("enter the holiday id who you want to edit:"))}
                 dis = remove['id']
                 if dis in list:
-                    nam = myhl.update_one({"id": dis}, {"$set": {"Date": date_fun()}})
+                    nam = myhl.update_one({"id": dis}, {"$set": {"Date": validate()}})
                     print("successfully update holiday name")
                 else:
                     print("this id is not found")
                     print("please enter valid holiday id")
-                if input('Do You Want To Continue to Edit Holiday details? ') != 'y':
+                ch4 = input("do you want to continue Edit Holiday system??")
+                if ch4 == 'y':
+                    print("please select the option form the below choice\n"
+                          "1. Edit Holiday name\n"
+                          "2. Edit Holiday date\n")
+                elif ch4 == 'n':
                     break
                 else:
-                    print(
-                        "please select the option form the below :\n"
-                        "1. Edit Holiday Name\n"
-                        "2. Edit Holidat date\n")
-
+                    print("please enter valid choice between ('y'/'n')")
+                    break
     def Display_Holiday():
         seq = 0
         for i in myhl.find():
@@ -431,7 +456,7 @@ def Holiday_management():
          Delete_Holiday()
      else:
         print("enter the valid number:")
-     op1 = input("'Do You Want To Continue with Holiday Management?'")
+     op1 = input("Do You Want To Continue with Holiday Management?")
      if op1 == 'y':
          print(
              "please select the option form the below :\n"
@@ -453,7 +478,13 @@ def Attendence_Management():
         "3. Update the employee Attendence\n"
         "4. Delete Attendence details\n")
     def Add_attendence():
-        function = {"id": sequence(),"Employee_id": int(input("enter the Emloyee id:")),"Date": date_fun()}
+        def sequence():
+            seq = 1
+            for i in mycol.find():
+                seq += 1
+            return seq
+
+        function = {"id": sequence(),"Employee_id": int(input("enter the Emloyee id:")),"Date": validate()}
         x = mya.insert_one(function)
     def Display_Attendence():
         seq = 0
@@ -473,19 +504,20 @@ def Attendence_Management():
         remove = {"Employee_id": int(input("enter the employee id who you want to edit:"))}
         dis = remove['Employee_id']
         if dis in list:
-            nam = mya.update_one({"employee_id": dis}, {"$set": {"Date": date_fun()}})
+            nam = mya.update_one({"employee_id": dis}, {"$set": {"Date":validate}})
             print("successfully update date of attendence")
         else:
             print("this id is not found")
             print("please enter valid employee id")
     def Delete_Attendece():
         list = []
-        for x in mya.find({}, {"employee_id": 1}):
-            list.append(x["employee_id"])
-        remove = {"employee_id": int(input("enter the employee id who you want to delete:"))}
-        dis = remove['employee_id']
+        for x in mya.find({}, {"Employee_id": 1}):
+            list.append(x["Employee_id"])
+        remove = {"Employee_id": int(input("enter the employee id who you want to delete:"))}
+        dis = remove['Employee_id']
         if dis in list:
             mya.delete_one(remove)
+            print("sucessfully deleted")
         else:
             print("this id is not found")
             print("please enter valid employee id")
