@@ -20,17 +20,11 @@ mycol = mydb["Employee"]
 myan = mydb["Annual"]
 myhl =mydb["Holiday"]
 mya = mydb["Attendence"]
-
-
-
-# def date_fun():
-#     date_entry = input('Enter a date in YYYY-MM-DD format:')
-#     year, month, day = map(int, date_entry.split('-'))
-#     date1 = datetime.datetime(year, month, day)
-#     return date1
+mysalary = mydb["Salary"]
 
 def validate():
     while True:
+
         date_entry = input("enter the date of birthday in YYYY-MM-DD format:")
         if re.search("^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$",date_entry):
                 year, month, day = map(int, date_entry.split('-'))
@@ -238,7 +232,7 @@ def Annual():
     def Add_Function():
         def sequence():
             seq = 1
-            for i in mycol.find():
+            for i in myan.find():
                 seq += 1
             return seq
 
@@ -372,7 +366,7 @@ def Holiday_management():
     def Add_Holiday():
         def sequence():
             seq = 1
-            for i in mycol.find():
+            for i in myhl.find():
                 seq += 1
             return seq
 
@@ -474,18 +468,18 @@ def Attendence_Management():
     print(
         "please select the option form the below :\n"
         "1. Add Attendence\n"
-        "2. Display the employee Attendence\n"
-        "3. Update the employee Attendence\n"
-        "4. Delete Attendence details\n")
+        "2. Display the employee Attendence\n")
+
     def Add_attendence():
         def sequence():
             seq = 1
-            for i in mycol.find():
+            for i in mya.find():
                 seq += 1
             return seq
 
-        function = {"id": sequence(),"Employee_id": int(input("enter the Emloyee id:")),"Date": validate()}
+        function = {"id": sequence(), "Employeeid":int(input("enter the employee id:")),"Date":validate()}
         x = mya.insert_one(function)
+
     def Display_Attendence():
         seq = 0
         for i in mya.find():
@@ -494,33 +488,9 @@ def Attendence_Management():
             print("No DATA......")
         else:
             for i in mya.find():
-                print("Employee_id:",i["Employee_id"])
-                print("Employee_Date:", i["Date"].strftime("%d/%m/%y"))
+                print("Employee_id:", i["Employeeid"])
+                print("Employee_date:", i["Date"].strftime("%d/%m/%y"))
                 print("-" * 70)
-    def Edit_Attendence():
-        list = []
-        for x in mya.find({}, {"Employee_id": 1}):
-            list.append(x["Employee_id"])
-        remove = {"Employee_id": int(input("enter the employee id who you want to edit:"))}
-        dis = remove['Employee_id']
-        if dis in list:
-            nam = mya.update_one({"employee_id": dis}, {"$set": {"Date":validate}})
-            print("successfully update date of attendence")
-        else:
-            print("this id is not found")
-            print("please enter valid employee id")
-    def Delete_Attendece():
-        list = []
-        for x in mya.find({}, {"Employee_id": 1}):
-            list.append(x["Employee_id"])
-        remove = {"Employee_id": int(input("enter the employee id who you want to delete:"))}
-        dis = remove['Employee_id']
-        if dis in list:
-            mya.delete_one(remove)
-            print("sucessfully deleted")
-        else:
-            print("this id is not found")
-            print("please enter valid employee id")
 
     while True:
      choice = int(input("enter the number of choise you want:"))
@@ -528,10 +498,6 @@ def Attendence_Management():
        Add_attendence()
      elif choice == 2:
        Display_Attendence()
-     elif choice == 3:
-        Edit_Attendence()
-     elif choice == 4:
-         Delete_Attendece()
      else:
         print("enter the valid number:")
      op = input("'Do You Want To Continue with Attendence Management?'")
@@ -539,15 +505,66 @@ def Attendence_Management():
          print(
              "please select the option form the below :\n"
              "1. Add Attendence\n"
-             "2. Display the employee Attendence\n"
-             "3. Update the employee Attendence\n"
-             "4. Delete Attendence details\n")
+             "2. Display the employee Attendence\n")
      elif op == 'n':
          break
      else:
          print("please enter valid choice between ('y'/'n')")
          break
 
+def salary():
+    print(
+        "please select the option form the below :\n"
+        "1. calculate Employee salary\n"
+        "2. Display the employee salary details")
+
+    def Add_Salary():
+      def sequence():
+         seq = 1
+         for i in mysalary.find():
+          seq += 1
+         return seq
+      def cal_salary():
+         list = []
+         for x in mysalary.find({}, {"Employeeid": 1}):
+             list.append(x["Employeeid"])
+         id = int(input("enter the employee id who's salary u want to calculate"))
+         a = list.count((id))
+         sal = int(input("enter the employee salary:"))
+         cal = ((sal/30)*a)
+         print("your salary is",cal)
+         # return cal
+         function = {"id": sequence(), "Employeeid":id, "Salary": cal}
+         x = mysalary.insert_one(function)
+         print("sucessfully calculate employee salary")
+      cal_salary()
+
+    def Display_salary():
+         for i in mysalary.find():
+          print("Employee_id:", i["Employeeid"])
+          print("Employee_Salary:", i["Salary"])
+          print("-" * 70)
+
+
+    while True:
+        choice = int(input("enter the number of choise you want:"))
+        if choice == 1:
+            Add_Salary()
+        elif choice == 2:
+            Display_salary()
+        else:
+            print("enter the valid number:")
+        op = input("'Do You Want To Continue with Salary Management?'")
+        if op == 'y':
+                print(
+                    "please select the option form the below :\n"
+                    "1. Add Employee salary\n"
+                    "2. Display the employee salary\n")
+        elif op == 'n':
+            break
+        else:
+                print("please enter valid choice between ('y'/'n')")
+                break
 
 while True:
  choice = int(input("enter the number of choise you want:"))
@@ -563,6 +580,7 @@ while True:
     Display()
  elif choice == 5:
     print("Salary Management")
+    salary()
  elif choice == 6:
     Attendence_Management()
  elif choice == 7:
@@ -571,6 +589,7 @@ while True:
      Holiday_management()
  else:
     print("enter valid number:")
+
 
  ch = input("do you want to continue with employee system??")
  if ch == 'y':
