@@ -22,17 +22,54 @@ myhl =mydb["Holiday"]
 mya = mydb["Attendence"]
 mysalary = mydb["Salary"]
 
+
+def name_validation():
+    while True:
+        name = input("enter employee name:")
+        if name.isalpha():
+            break
+        print("invalid name")
+    return name
+
+
+def validate_status():
+    while True:
+        Status = input("enter the status:")
+        if (Status == "Fresher" or Status == "fresher") or (Status == "Experience" or Status == "experience"):
+            break
+        print("it is not valid....please enter status fresher or experience")
+    return Status
+
+
+def validate_mobilenum():
+    while True:
+        a = input("enter the mobile number:")
+        if len(a) == 10 and a.isdigit():
+            break
+        print("it's not valid....enter the 10-digit mobile number:")
+    return a
+
+
 def validate():
     while True:
-
-        date_entry = input("enter the date of birthday in YYYY-MM-DD format:")
-        if re.search("^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$",date_entry):
-                year, month, day = map(int, date_entry.split('-'))
-                date1 = datetime.datetime(year, month, day)
-                return date1
-                break
+        date_entry = input("enter the date in YYYY-MM-DD format:")
+        if re.search("^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$", date_entry):
+            year, month, day = map(int, date_entry.split('-'))
+            date1 = datetime.datetime(year, month, day)
+            return date1
+            break
         else:
-               print("It's not valid.. enter the YYYY-MM-DD format:")
+            print("It's not valid.. enter the YYYY-MM-DD format:")
+
+
+def email_vlidation():
+    while True:
+        email = input("enter an email address:")
+        if re.match("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z.]+$", email):
+            break
+        print("is not valid..please enter correct email:")
+    return email
+
 
 def Add_Employee():
     def sequence():
@@ -41,45 +78,6 @@ def Add_Employee():
             seq += 1
         return seq
 
-    def name_validation():
-        while True:
-          name = input("enter employee name:")
-          if name.isalpha():
-             break
-          print("invalid name")
-        return name
-
-    def validate_status():
-         while True:
-           Status = input("enter the status:")
-           if (Status=="Fresher" or Status=="fresher") or (Status=="Experience" or Status=="experience"):
-              break
-           print("it is not valid....please enter status fresher or experience")
-         return Status
-    def validate_mobilenum():
-        while True:
-          a = input("enter the mobile number:")
-          if len(a) == 10 and a.isdigit():
-            break
-          print("it's not valid....enter the 10-digit mobile number:")
-        return a
-    def validate():
-         while True:
-             date_entry = input("enter the date of birthday in YYYY-MM-DD format:")
-             if re.search("^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$",date_entry):
-                year, month, day = map(int, date_entry.split('-'))
-                date1 = datetime.datetime(year, month, day)
-                return date1
-                break
-             else:
-               print("It's not valid.. enter the YYYY-MM-DD format:")
-    def email_vlidation():
-        while True:
-          email = input("enter an email address:")
-          if re.match("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z.]+$",email):
-           break
-          print("is not valid..please enter correct email:")
-        return email
 
     user_dict={"id":sequence(),"name":name_validation(),"Address": input("enter the Address:") ,
                "Status":validate_status(),"DOB":validate(),"Email":email_vlidation(),
